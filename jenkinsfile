@@ -1,0 +1,77 @@
+pipeline{
+    agent{
+        label 'jenkinsslave2'
+    }
+environment{
+    DB_USRNM='admin'
+    DB_PSSWD='Shorya@_123'
+    DB_URL='mysql'
+    DB_SCHEMA='Env'
+   // CONTAINER_NAME='env'
+   // IMAGE_NAME='ec2/env:1.0'
+    //MYSQL_IMAGE='mysql:8.0.28'
+    // NETWORK_NAME='envnw'
+    // VOLUME_NAME='envvol'
+    SQL_FILE='envschema.sql'
+}
+parameters {
+    string(name: 'input_var_1', defaultValue: '', description: 'Enter your first input value')
+    string(name: 'input_var_2', defaultValue: '', description: 'Enter your second input value')
+    string(name: 'input_var_3', defaultValue: '', description: 'Enter container_name')
+    string(name: 'input_var_4', defaultValue: '', description: 'Enter image_name')
+    string(name: 'input_var_5', defaultValue: '', description: 'Enter mysql_container name')
+    string(name: 'input_var_6', defaultValue: '', description: 'Enter ymysql_image name')
+    string(name: 'input_var_7', defaultValue: '', description: 'Enter network_name')
+    string(name: 'input_var_8', defaultValue: '', description: 'Enter volume_name')
+    string(name: 'input_var_9', defaultValue: '', description: 'Enter mysql_pass')
+    string(name: 'input_var_10',defaultValue: '', description: 'Enter sql file path')
+  }
+stages{
+    stage('checkout'){
+        steps{
+            git branch: 'main', url:'https://github.com/shorya1104/env.git'
+        }
+    }
+    stage('infrastructure'){
+        steps{
+            script{
+                /*python script*/
+                def input1 = params.input_var_1
+                def input2 = params.input_var_2
+                sh "sudo python3 infra.py  ${input1} ${input2}"
+            }
+        }
+    }
+    stage('prepare db'){
+        steps{
+            sh '''
+                sed -i "s|#dbusername#|$DB_USRNM|g" /u01/jenkins/workspace/envtest/env
+                sed -i "s|#dbpassword#|$DB_PSSWD|g" /u01/jenkins/workspace/envtest/env
+                sed -i "s|#dbname#|$DB_SCHEMA|g" /u01/jenkins/workspace/envtest/env
+                sed -i "s|#dburl#|$DB_URL|g" /u01/jenkins/workspace/envtest/env
+            '''
+        }
+    }
+    // stage('build'){
+    //     steps{
+    //         sh 'python3 Feb9Env.py' 
+    //     }
+    // }
+    stage('deploy'){
+         steps{
+            script{
+                /*python script*/
+                def input3 = params.input_var_3
+                def input4 = params.input_var_4
+                def input5 = params.input_var_5
+                def input6 = params.input_var_6
+                def input7 = params.input_var_7
+                def input8 = params.input_var_8
+                def input9 = params.input_var_9
+                def input10 = params.input_var_10
+                sh "sudo python3 deploy.py ${input3}  ${input4}  ${input5}  ${input6}  ${input7}  ${input8}  ${input9}  ${input10}"
+            }
+        }
+    }
+  }
+}
