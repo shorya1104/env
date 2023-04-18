@@ -47,13 +47,13 @@ def deployapp(container_name,image_name):
             os.system("sudo docker container remove '{}'".format(container_name))
             os.system("sudo docker image remove '{}'".format(image_name))
             os.system("sudo docker build -t '{}' .".format(image_name))
-            os.system("sudo docker container run -d --name '{}' --restart unless-stopped --network envnw -p3000:3000 '{}'".format(container_name,image_name)) 
+            os.system("sudo docker container run -d --name '{}' --restart unless-stopped --network '{}' -p3000:3000 '{}'".format(container_name,network_name,image_name)) 
             os.system("sudo python3 Feb9Env.py")
         else:
             print(container_name,"hello1")
             os.system("echo 'new image'")
             os.system("sudo docker build -t '{}' .".format(image_name))
-            os.system("sudo docker container run -d --name '{}' --restart unless-stopped -p3000:3000 '{}'".format(container_name,image_name)) 
+            os.system("sudo docker container run -d --name '{}' --restart unless-stopped --network '{}' -p3000:3000 '{}'".format(container_name,network_name,image_name)) 
             # os.system("sudo python3 Feb9Env.py")
     except Exception as e:
         print(e)
