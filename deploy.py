@@ -1,3 +1,4 @@
+from time import sleep
 import subprocess
 import sys
 import os
@@ -28,10 +29,12 @@ def mysqlContainerrun(mysql_container,mysql_image,network_name,volume_name,mysql
             print("mysql container running")
         else:
             os.system("sudo docker container run --name '{}' -p3306:3306 --network '{}' --mount type=volume,source='{}',target=/var/lib/mysql -e MYSQL_ROOT_PASSWORD='{}' -d '{}'".format(mysql_container,network_name,volume_name,mysql_pass,mysql_image))
+            sleep(1.2)
             a=os.path.abspath('{}').format(sqlFilePath)
-            # print(a)
+            sleep(1.2)
             os.system("echo 'mysql running'")
             print("copying sql file in db")
+            sleep(1.2)
             os.system("sudo docker cp '{}' '{}':/".format(a,mysql_container))
     except Exception as e:
         print(e)
@@ -43,16 +46,23 @@ def deployapp(container_name,image_name):
             print("container running")
             print(container_name,"hello")
             os.system("echo 'container runnig kill'")
+            sleep(1.2)
             os.system("sudo docker container stop '{}'".format(container_name))
+            sleep(1.2)
             os.system("sudo docker container remove '{}'".format(container_name))
+            sleep(1.2)
             os.system("sudo docker image remove '{}'".format(image_name))
+            sleep(1.2)
             os.system("sudo docker build -t '{}' .".format(image_name))
+            sleep(1.2)
             os.system("sudo docker container run -d --name '{}' --restart unless-stopped --network '{}' -p3000:3000 '{}'".format(container_name,network_name,image_name)) 
-            os.system("sudo python3 Feb9Env.py")
+#             os.system("sudo python3 Feb9Env.py")
         else:
             print(container_name,"hello1")
             os.system("echo 'new image'")
+            sleep(1.2)
             os.system("sudo docker build -t '{}' .".format(image_name))
+            sleep(1.2)
             os.system("sudo docker container run -d --name '{}' --restart unless-stopped --network '{}' -p3000:3000 '{}'".format(container_name,network_name,image_name)) 
             # os.system("sudo python3 Feb9Env.py")
     except Exception as e:
