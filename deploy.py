@@ -27,7 +27,7 @@ def mysqlContainerrun(mysql_container,mysql_image,network_name,volume_name,mysql
         if is_mysql_container_running(mysql_container):
             print("mysql container running")
         else:
-            os.system("sudo docker container run --name '{}' -p3360:3360 --network '{}' --mount type=volume,source='{}',target=/var/lib/mysql -e MYSQL_ROOT_PASSWORD='{}' -d '{}'".format(mysql_container,network_name,volume_name,mysql_pass,mysql_image))
+            os.system("sudo docker container run --name '{}' -p3306:3306 --network '{}' --mount type=volume,source='{}',target=/var/lib/mysql -e MYSQL_ROOT_PASSWORD='{}' -d '{}'".format(mysql_container,network_name,volume_name,mysql_pass,mysql_image))
             a=os.path.abspath('{}').format(sqlFilePath)
             # print(a)
             os.system("echo 'mysql running'")
